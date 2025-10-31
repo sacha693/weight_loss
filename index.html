@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>體重管理：自我覺察互動測驗</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Chart.js 函式庫用於繪製雷達圖 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        /* 使用 Inter 字體以獲得現代、清晰的視覺效果 */
+        @import url('https://fonts.fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            /* 瑞沙舟基調：淺石灰色 */
+            background-color: #f5f5f4; 
+            min-height: 100vh;
+           /* --- 新增背景圖片設定 --- */
+            background-image: url('https://github.com/sacha693/sachalai-hypnosis/blob/main/indexBk.jpg.jpg?raw=true');
+            background-size: cover; /* 確保圖片覆蓋整個視窗 */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* 讓圖片固定不動 */
+            /* ------------------------ */
+        }
+        .step-card {
+            min-height: 500px; /* 增加高度，使頁面更飽滿 */
+        }
+        .progress-bar-inner {
+            transition: width 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <!-- 主容器 - 模擬網頁內容卡片 -->
+    <div id="app" class="w-full max-w-2xl bg-white shadow-2xl rounded-xl overflow-hidden my-8 transform transition-all duration-300">
+
+        <!-- 標題與進度條 (品牌色：深青色/Teal) -->
+        <header class="bg-teal-700 p-6 md:p-8">
+            <div class="flex items-center">
+                <!-- 替換為實際的 Logo 圖片 -->
+                <img src="https://github.com/sacha693/sachalai-hypnosis/blob/main/LINE_ALBUM_2025828_250927_1.jpg?raw=true" 
+                     alt="瑞沙舟心流 Logo" 
+                     class="h-10 w-10 mr-3 rounded-full object-cover shadow-md" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/40x40/000/FFF?text=LOGO'">
+                <h1 class="text-3xl font-extrabold text-white mb-0">減重心態羅盤</h1>
+            </div>
+            <p class="text-teal-200 text-sm mt-2">由潛意識視角設計的自我覺察互動測驗</p>
+            
+            <!-- 進度條 -->
+            <div id="progressContainer" class="mt-4 hidden">
+                <div class="h-2 bg-teal-300 rounded-full">
+                    <!-- 進度條顏色變更為琥珀色 (Amber) - 瑞光色 -->
+                    <div id="progressBar" class="progress-bar-inner h-2 bg-amber-400 rounded-full" style="width: 0%;"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 內容區塊 -->
+        <main class="p-6 md:p-8 step-card flex flex-col justify-between">
+            
+            <!-- 步驟內容 (根據 currentStep 渲染) -->
+            <div id="content">
+                <!-- 初始頁面 -->
+                <div id="startScreen">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">發掘潛意識中的「心態陷阱」</h2>
+                    
+                    <!-- 💡 開發設計的專立宣言 (Design Philosophy) -->
+                    <div class="mb-6 p-4 bg-teal-50 border-l-4 border-teal-500 rounded-lg">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                            </svg>
+                            專立宣言：心流與覺察的基石
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            本測驗基於<span class="text-amber-700 font-bold">認知行為與深潛意識</span>原理，聚焦於減重過程中的四大核心心態陷阱。設計目標是提供一個<span class="text-teal-600 font-semibold">溫和且非批判性</span>的自我評估工具，協助您從<span class="text-teal-600">「心態調整」</span>開始，建立長期、穩健的健康生活流動狀態。我們相信，真正的改變始於內在的覺察。
+                        </p>
+                    </div>
+
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        減重不只是計算卡路里，更是一場心靈的對話。許多人無法成功，是因為被潛意識中的<span class="text-amber-700 font-semibold">「心態陷阱」</span>所困。本測驗將幫助您從潛意識角度，找出阻礙您的主要模式。
+                    </p>
+                    
+                    <!-- 突顯顯示的非專業診斷聲明 -->
+                    <p class="text-sm font-bold text-red-700 mb-6 leading-relaxed p-3 border-2 border-red-300 bg-red-100 rounded-lg">
+                        ⚠️ <span class="text-red-800">重要聲明</span>：此測驗為<span class="text-red-800 font-extrabold">非專業診斷</span>工具，旨在提供自我覺察與方向引導，不能取代專業醫療或心理諮詢。
+                    </p>
+                    
+                    <!-- 按鈕顏色變更為琥珀色 (Amber) -->
+                    <button onclick="startAssessment()" class="w-full bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600 transition duration-150 shadow-lg">
+                        開始覺察之旅 (共 8 題)
+                    </button>
+                </div>
+                
+                <!-- 測驗題目 (將由 JS 渲染) -->
+                <div id="questionContainer" class="hidden">
+                    <h3 id="questionText" class="text-xl font-semibold text-gray-800 mb-6 leading-relaxed"></h3>
+                    <div id="optionsContainer" class="space-y-4">
+                        <!-- 選項將由 JS 渲染 -->
+                    </div>
+                </div>
+
+                <!-- 結果頁面 (將由 JS 渲染) -->
+                <div id="resultScreen" class="hidden">
+                    <!-- 標題顏色變更為深青色 (Teal) -->
+                    <h3 class="text-2xl font-bold text-teal-600 mb-4">您的主要心態陷阱是：</h3>
+                    <!-- 邊框顏色變更為琥珀色 (Amber) -->
+                    <div id="resultCard" class="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500 shadow-md mb-6">
+                        <!-- 內文標題顏色變更為琥珀色 (Amber) -->
+                        <h4 id="resultTitle" class="text-xl font-extrabold text-amber-700 mb-2"></h4>
+                        <p id="resultDescription" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+
+                    <!-- 雷達圖顯示區塊 -->
+                    <div class="mb-8 p-4 bg-white rounded-lg shadow-inner border border-gray-200">
+                        <h4 class="text-xl font-bold text-gray-800 mb-4">📊 心態陷阱雷達分析</h4>
+                        <!-- 雷達圖 Canvas -->
+                        <canvas id="mindsetRadarChart"></canvas>
+                    </div>
+
+                    <!-- 行動建議 -->
+                    <h4 class="text-xl font-bold text-gray-800 mb-4">🔑 行動建議：</h4>
+                    <p id="resultTip" class="text-gray-600 leading-relaxed mb-8"></p>
+
+                    <!-- 催眠調整建議 (NEW BLOCK) -->
+                    <h4 class="text-xl font-bold text-gray-800 mb-4 border-t pt-4">🔮 催眠師的潛意識調整方向：</h4>
+                    <p id="hypnosisAdjustment" class="text-gray-600 leading-relaxed mb-8"></p>
+
+                    <!-- 心靈羅盤導航區 -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-gray-800 border-t pt-4">🧭 心靈羅盤導航</h4>
+                        
+                        <!-- 連結催眠師按鈕 - 仍舊開啟 Modal 進行提醒 -->
+                        <a href="#" onclick="showContactModal(event)" class="flex items-center justify-center bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition duration-150 shadow-lg group">
+                            <span class="mr-2 text-2xl">✨</span>
+                            <span class="group-hover:underline">深度覺察：連結潛意識領航員</span>
+                        </a>
+                        
+                        <!-- 重新開始 -->
+                        <button onclick="resetAssessment()" class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-150">
+                            🔄 重新進行自我評估
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 導航按鈕 (僅在問答階段顯示) -->
+            <div id="navButtons" class="mt-8 hidden">
+                <!-- 按鈕顏色變更為深青色 (Teal) -->
+                <button onclick="nextQuestion()" id="nextButton" class="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition duration-150 opacity-50 cursor-not-allowed" disabled>
+                    下一題
+                </button>
+            </div>
+        </main>
+        
+        <!-- 頁腳 -->
+        <footer class="p-4 bg-gray-100 text-center text-sm text-gray-500 border-t">
+            © 2025本問卷的具體問題、分析維度定義及催眠引導建議，均為《瑞光沙舟》之獨家內容版權所有，未經授權，請勿複製。
+        </footer>
+    </div>
+
+    <!-- 模態視窗 (Modal for Hypnotherapist Link) - 已更新內容以包含外部連結 -->
+    <div id="contactModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-8 max-w-sm w-full shadow-2xl">
+            <!-- 標題顏色變更為深青色 (Teal) -->
+            <h3 class="text-2xl font-bold text-teal-600 mb-4">連結潛意識領行員</h3>
+            <p class="text-gray-700 mb-6">在潛意識調整的旅程上，專業協助能讓您的改變更深入、更持久。</p>
+            
+            <p class="text-sm font-bold text-red-700 mb-6 leading-relaxed p-3 border-2 border-red-300 bg-red-100 rounded-lg">
+                ⚠️ <span class="text-red-800">重要提醒</span>：此為外部連結資源。請務必在現實生活中尋找具有專業執照催眠師進行調整。
+            </p>
+            
+            <!-- 新增外部連結按鈕 -->
+            <a href="https://sacha693.github.io/sachalai-hypnosis/index.html" target="_blank" class="block w-full text-center bg-amber-500 text-white py-2 rounded-lg font-semibold hover:bg-amber-600 transition duration-150 mb-3">
+                前往專業催眠師【瑞光沙舟心流所】
+            </a>
+            
+            <!-- 取消按鈕 -->
+            <button onclick="closeContactModal()" class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-150">
+                取消/留在這裡
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 核心資料結構：每個問題有 4 個選項，分數從 1（健康心態）到 4（陷阱嚴重）
+        const questions = [
+            // Q1: 全有或全無 (A/N) - 處理失誤後的反應
+            {
+                text: "當我的飲食計畫被打破 (例如：多吃了一塊蛋糕) 時，我通常的反應是？",
+                trap: 'A/N', 
+                options: [
+                    { text: "A. 沒關係，我原諒自己，下一餐/明天回到正軌。", score: 1 }, // 最健康
+                    { text: "B. 感到有點內疚，但很快就能調整心態。", score: 2 },
+                    { text: "C. 覺得自己失敗了，開始有點放縱，但隔天會努力彌補。", score: 3 },
+                    { text: "D. 既然破功了，那今天就徹底放縱吧，明天再說。", score: 4 } // 最極端
+                ]
+            },
+            // Q2: 數字崇拜 (N/W) - 判斷成功的標準
+            {
+                text: "我判斷減重是否成功的**主要**依據是？",
+                trap: 'N/W', 
+                options: [
+                    { text: "A. 我的體力、睡眠品質或衣服尺寸有沒有改善。", score: 1 },
+                    { text: "B. 我會同時關注數字和身體感受，數字讓我更踏實。", score: 2 },
+                    { text: "C. 體重計上的數字下降是關鍵，其他進步只是附帶的。", score: 3 },
+                    { text: "D. 每天早上體重計上的數字是唯一能證明我努力的標準。", score: 4 }
+                ]
+            },
+            // Q3: 自我批判 (S/C) - 處理失控時的內在對話
+            {
+                text: "當我對飲食或運動失控時，我對自己說的話通常是？",
+                trap: 'S/C', 
+                options: [
+                    { text: "A. 我現在感覺如何？下次我可以怎麼做得更好？", score: 1 },
+                    { text: "B. 我對自己有點失望，但知道這只是個小挫折。", score: 2 },
+                    { text: "C. 我會嚴厲批評自己的意志力，但很快就會停止。", score: 3 },
+                    { text: "D. 我真是沒用，連這點自制力都沒有，我永遠做不到。", score: 4 }
+                ]
+            },
+            // Q4: 外在壓力 (E/P) - 動力來源的根源
+            {
+                text: "我減重最主要的動力來源是？",
+                trap: 'E/P', 
+                options: [
+                    { text: "A. 為了讓自己更健康、更有活力、自我感覺良好。", score: 1 },
+                    { text: "B. 內在健康動機為主，但也希望自己看起來更好。", score: 2 },
+                    { text: "C. 為了符合社會期待、伴侶要求或參加某個重要場合。", score: 3 },
+                    { text: "D. 感到巨大的壓力或義務，別人期待我改變。", score: 4 }
+                ]
+            },
+            // Q5: 全有或全無 (A/N) - 處理計劃的彈性
+            {
+                text: "當我制定飲食或運動計劃時，我對其的態度是？",
+                trap: 'A/N', 
+                options: [
+                    { text: "A. 視為一個指南，允許根據實際情況（如社交活動）進行適度調整。", score: 1 },
+                    { text: "B. 盡量遵守，但如果計畫被打亂，我會稍微感到壓力。", score: 2 },
+                    { text: "C. 必須完全遵守，否則就是失敗，不能有任何彈性。", score: 3 },
+                    { text: "D. 任何輕微的偏差都會讓我極度焦慮，認為計畫已毀。", score: 4 }
+                ]
+            },
+            // Q6: 數字崇拜 (N/W) - 處理進展緩慢時的感受
+            {
+                text: "如果我努力了一週，但體重計上的數字沒有明顯變化，我會？",
+                trap: 'N/W', 
+                options: [
+                    { text: "A. 提醒自己關注其他進展（如體力、心情），並知道體重下降需要時間。", score: 1 },
+                    { text: "B. 略感不滿，但告訴自己保持耐心，並繼續努力。", score: 2 },
+                    { text: "C. 感到極度沮喪和失望，認為努力沒有價值。", score: 3 },
+                    { text: "D. 立刻認為這個方法是無效的，並且產生強烈的放棄念頭。", score: 4 }
+                ]
+            },
+            // Q7: 自我批判 (S/C) - 處理情緒低落時的應對機制
+            {
+                text: "當我感到壓力很大或情緒低落時，我通常會尋求什麼來立即安慰自己？",
+                trap: 'S/C', 
+                options: [
+                    { text: "A. 進行深呼吸、散步或與信任的朋友/親人傾訴。", score: 1 },
+                    { text: "B. 偶爾會想找食物安慰，但大多時間會選擇健康方式。", score: 2 },
+                    { text: "C. 經常性地透過找尋高熱量食物來逃避情緒或安慰自己。", score: 3 },
+                    { text: "D. 高熱量食物或無意識追劇是我的唯一應對機制。", score: 4 }
+                ]
+            },
+            // Q8: 外在壓力 (E/P) - 內心的感受定性
+            {
+                text: "提到「減重目標」時，我內心的感受更像是？",
+                trap: 'E/P', 
+                options: [
+                    { text: "A. 一個讓我感到興奮和期待的自我成長機會。", score: 1 },
+                    { text: "B. 是一個讓我想達成的目標，讓生活更圓滿。", score: 2 },
+                    { text: "C. 一個必須完成的義務，我怕不成功會讓人失望。", score: 3 },
+                    { text: "D. 一種被迫和沉重的負擔，我渴望早日結束它。", score: 4 }
+                ]
+            }
+        ];
+
+        // 心態陷阱的解析資料 - 已移除多餘的 ** 和 $\rightarrow$
+        const resultsData = {
+            'A/N': {
+                title: "❌ 全有或全無的極端思維 (All or Nothing)",
+                description: "💡 選項模式 (因): 追求<span class=\"text-amber-700 font-bold\">極致完美與零失誤</span> ➡️ 🛑 潛意識陷阱 (果): 一旦失誤，立即啟動<span class=\"text-teal-600 font-semibold\">放棄懲罰模式</span>，導致持續的中斷循環。<br><br>這是一種追求極致完美主義的心魔，讓您的努力難以累積。",
+                tip: "請練習<span class=\"text-amber-700 font-bold\">「彈性與修復」</span>。<br>將飲食視為一個<span class=\"text-teal-600 font-semibold\">平均值</span>的遊戲，而不是完美達標的挑戰。一個小失誤只是浪花，您隨時可以溫柔地回到河流中，繼續向前流動。<br>從現在起，請將注意力放在<span class=\"text-teal-600 font-semibold\">「下一次做對」</span>，而不是<span class=\"text-teal-600 font-semibold\">「上一次做錯」</span>。",
+                hypnosisAdjustment: "催眠能幫助在潛意識中，將<span class=\"text-amber-700 font-bold\">「完美」</span>與<span class=\"text-amber-700 font-bold\">「挫敗」</span>的連結鬆綁。<br>透過潛意識建議，建立<span class=\"text-teal-600 font-semibold\">「彈性」</span>與<span class=\"text-teal-600 font-semibold\">「自我原諒」</span>的反射路徑，讓您在小失誤後能立即中斷放縱行為，溫和地回歸正軌。"
+            },
+            'N/W': {
+                title: "🔢 數字崇拜與速效迷思 (Number Worship)",
+                description: "💡 選項模式 (因): 將<span class=\"text-amber-700 font-bold\">體重數字</span>視為衡量成功的唯一標準 ➡️ 🛑 潛意識陷阱 (果): 數字波動或停滯時產生<span class=\"text-teal-600 font-semibold\">巨大的無效感和放棄衝動</span>，忽略了行為改善的長期價值。",
+                tip: "請將焦點從<span class=\"text-amber-700 font-bold\">「外在數字」</span>轉移到<span class=\"text-teal-600 font-bold\">「內在感受」</span>。<br>每天記錄您的活力、睡眠和心情。設定<span class=\"text-teal-600 font-bold\">「行為目標」</span>（如：每週運動三次），而非體重數字目標，讓成功更容易被看見。<br>記得，健康是過程，數字只是結果。",
+                hypnosisAdjustment: "催眠可以重新定義<span class=\"text-teal-600 font-semibold\">「成功」</span>的標準。<br>它能強化潛意識對於<span class=\"text-amber-700 font-bold\">「內在感受」</span>（如：身體的輕盈、力量的增加）和<span class=\"text-amber-700 font-bold\">「行為持續」</span>的價值認同，減少對體重數字的焦慮與依賴，將專注力轉移到長期、穩定的健康生活方式上。"
+            },
+            'S/C': {
+                title: "🗣️ 嚴厲的自我批判 (Self-Criticism)",
+                description: "💡 選項模式 (因): 遇到挫折時啟動<span class=\"text-amber-700 font-bold\">嚴厲負面自責</span>，並習慣用高熱量食物應對情緒 ➡️ 🛑 潛意識陷阱 (果): 內在批評家消耗心理能量，使您慣性地尋求<span class=\"text-teal-600 font-semibold\">食物安慰</span>，陷入情緒性進食的循環。",
+                tip: "請培養<span class=\"text-amber-700 font-bold\">「自我關懷」</span>！<br>當您遇到挫折時，試著問自己：「如果我最好的朋友遇到這件事，我會怎麼鼓勵他？」<br>用同樣<span class=\"text-teal-600 font-bold\">溫柔的語言</span>對待自己，讓愛成為持續的動力。每一次鼓勵，都是為自己儲備能量。",
+                hypnosisAdjustment: "催眠引導能繞過批判性的意識心智，在潛意識中植入<span class=\"text-teal-600 font-bold\">「溫柔的內在聲音」</span>。<br>這有助於消除羞愧感，建立強大的<span class=\"text-amber-700 font-bold\">「自我關懷」</span>基礎，讓您在壓力或情緒低落時，自動尋求健康而非食物的安慰。"
+            },
+            'E/P': {
+                title: "🌍 依賴外在壓力 (External Pressure)",
+                description: "💡 選項模式 (因): 動力主要來自<span class=\"text-amber-700 font-bold\">外界期待、要求或義務感</span> ➡️ 🛑 潛意識陷阱 (果): 缺乏內在根基，將減重視為<span class=\"text-teal-600 font-semibold\">沉重負擔</span>，導致外在壓力解除後動力快速消退。",
+                tip: "請將動機轉為<span class=\"text-teal-600 font-bold\">「內在渴望」</span>。<br>寫下減重能為您生活帶來的<span class=\"text-amber-700 font-bold\">非美觀好處</span>（如：更有體力、遠離疾病、更自信）。<br>為了自己而努力，這份動力才能堅韌且持久，成為您自己的主人。",
+                hypnosisAdjustment: "催眠可以協助您探尋真正的<span class=\"text-teal-600 font-bold\">「內在渴望」</span>。<br>透過潛意識的深度連結，將減重的動力從<span class=\"text-amber-700 font-bold\">「為別人」</span>轉變為<span class=\"text-teal-600 font-bold\">「為自己」</span>，建立堅不可摧的<span class=\"text-amber-700 font-bold\">自主性經</span>，讓改變從壓力變成享受。"
+            }
+        };
+
+        // 狀態管理
+        let currentStep = 0;
+        let scores = { 'A/N': 0, 'N/W': 0, 'S/C': 0, 'E/P': 0 };
+        let selectedOption = null;
+        let chartInstance = null; // 用來儲存 Chart.js 實例
+
+        // DOM 元素
+        const startScreen = document.getElementById('startScreen');
+        const questionContainer = document.getElementById('questionContainer');
+        const resultScreen = document.getElementById('resultScreen');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const navButtons = document.getElementById('navButtons');
+        const nextButton = document.getElementById('nextButton');
+        const hypnosisAdjustmentElement = document.getElementById('hypnosisAdjustment'); 
+
+        // ==== 核心功能 ====
+
+        function startAssessment() {
+            // 初始化狀態
+            currentStep = 1;
+            // 初始化分數，每個陷阱的最低分是 2 (2題 * 1分)
+            scores = { 'A/N': 0, 'N/W': 0, 'S/C': 0, 'E/P': 0 }; 
+            selectedOption = null;
+
+            // 顯示問答介面
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            questionContainer.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            navButtons.classList.remove('hidden');
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            if (currentStep > questions.length) {
+                showResults();
+                return;
+            }
+
+            const questionData = questions[currentStep - 1];
+            const totalQuestions = questions.length;
+            const progress = (currentStep - 1) / totalQuestions * 100;
+
+            // 更新進度條
+            progressBar.style.width = `${progress}%`;
+            
+            // 渲染題目
+            document.getElementById('questionText').textContent = `問題 ${currentStep}/${totalQuestions}: ${questionData.text}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            questionData.options.forEach((option, index) => {
+                const optionIndex = index + 1; // 1-based index for visual reference
+                const label = document.createElement('label');
+                // 選項互動高亮顏色變更為琥珀色 (Amber)
+                label.className = 'flex items-center p-4 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-teal-50 transition duration-150 shadow-sm';
+                label.innerHTML = `
+                    <input type="radio" name="question" value="${option.score}" class="form-radio h-5 w-5 text-amber-500 focus:ring-amber-500" onclick="handleOptionSelect(${optionIndex - 1}, '${questionData.trap}', ${option.score})">
+                    <span class="ml-3 text-gray-700 font-medium">${option.text}</span>
+                `;
+                optionsContainer.appendChild(label);
+            });
+
+            // 重置按鈕狀態
+            selectedOption = null;
+            nextButton.disabled = true;
+            nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+            nextButton.classList.remove('hover:bg-teal-700'); 
+        }
+
+        function handleOptionSelect(index, trap, score) {
+            // 處理選擇邏輯
+            selectedOption = { trap, score };
+            
+            // 啟用下一題按鈕
+            nextButton.disabled = false;
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextButton.classList.add('hover:bg-teal-700'); 
+
+            // 視覺效果：高亮選中的選項 (顏色變更為琥珀色)
+            const options = document.querySelectorAll('#optionsContainer label');
+            options.forEach((label, i) => {
+                if (i === index) {
+                    label.classList.add('ring-2', 'ring-amber-500', 'bg-amber-50');
+                    label.classList.remove('hover:bg-teal-50'); 
+                } else {
+                    label.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-50');
+                    label.classList.add('hover:bg-teal-50');
+                }
+            });
+        }
+
+        function nextQuestion() {
+            if (!selectedOption) return;
+
+            // 儲存分數 (分數為 1, 2, 3, 4)
+            scores[selectedOption.trap] += selectedOption.score;
+            
+            // 進入下一題
+            currentStep++;
+
+            // 更新進度條到 100%
+            if (currentStep > questions.length) {
+                progressBar.style.width = '100%';
+            }
+
+            updateUI();
+        }
+
+        function renderRadarChart(scores, maxScore) {
+            // 如果圖表已存在，先銷毀它
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('mindsetRadarChart').getContext('2d');
+        
+            const data = {
+                // 軸標籤 (Labels for the 4 axes)
+                labels: [
+                    '❌ 全有或全無 ',
+                    '🔢 數字崇拜 ',
+                    '🗣️ 自我批判 ',
+                    '🌍 外在壓力 '
+                ],
+                datasets: [{
+                    label: '您的潛意識風險分數 (Max: 8)',
+                    data: [
+                        scores['A/N'],
+                        scores['N/W'],
+                        scores['S/C'],
+                        scores['E/P']
+                    ],
+                    backgroundColor: 'rgba(251, 191, 36, 0.4)', // Amber-300 with transparency
+                    borderColor: 'rgb(245, 158, 11)', // Amber-600
+                    pointBackgroundColor: 'rgb(245, 158, 11)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(245, 158, 11)',
+                    borderWidth: 2,
+                    tension: 0.1
+                }]
+            };
+
+            const config = {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true, 
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: '#d1d5db' // gray-300
+                            },
+                            grid: {
+                                color: '#d1d5db' // gray-300
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#1f2937' // gray-800
+                            },
+                            // Define the range of the chart axes (Max score is 4*2 = 8)
+                            min: 0,
+                            max: maxScore,
+                            ticks: {
+                                stepSize: 2,
+                                beginAtZero: true,
+                                color: '#4b5563', // gray-600
+                                backdropColor: 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // 隱藏圖例
+                        },
+                        title: {
+                            display: true,
+                            text: '四個心態陷阱的風險分布',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                },
+            };
+
+            chartInstance = new Chart(ctx, config);
+        }
+
+        function showResults() {
+            // 找到最高分的心態陷阱
+            const trapKeys = Object.keys(scores);
+            let maxScore = -1;
+            let primaryTrap = null;
+            const maxPossibleScore = 8; // (2 questions * 4 points = 8)
+
+            trapKeys.forEach(key => {
+                if (scores[key] > maxScore) {
+                    maxScore = scores[key];
+                    primaryTrap = key;
+                }
+            });
+            
+            // 調整最高分數界線
+            const lowRiskThreshold = 4; // 2 questions * 2 points average 
+            
+            // 如果所有分數都低於某個安全線 (例如，每題平均分低於 2.5)，則給予積極的總結
+            if (maxScore <= lowRiskThreshold) {
+                 primaryTrap = 'A/N'; // 預設使用 A/N，但修改內容
+                 resultsData['A/N'].title = "✅ 恭喜！您的心態極為健康！";
+                 resultsData['A/N'].description = "您的答覆顯示，您擁有<span class=\"text-teal-600 font-semibold\">高度的自我覺察</span>和<span class=\"text-teal-600 font-semibold\">健康的韌性</span>。阻礙您減重的可能更多是<span class=\"text-amber-700 font-bold\">「環境因素」</span>或<span class=\"text-amber-700 font-bold\">「方法調整」</span>，而非心理因素。<br>請保持這份自我關懷！";
+                 resultsData['A/N'].tip = "請保持這份<span class=\"text-teal-600 font-bold\">溫柔的自我關懷</span>，並專注於<span class=\"text-amber-700 font-bold\">「內在動機」</span>。<br>如果遇到瓶頸，可以嘗試更專業的運動或飲食規劃，或是尋求營養師的協助，繼續創造美好的生活體驗。";
+                 resultsData['A/N'].hypnosisAdjustment = "您的潛意識已經處於<span class=\"text-teal-600 font-semibold\">高效能的協作狀態</span>，催眠能幫助您更進一步強化現有的<span class=\"text-amber-700 font-bold\">「內在動機」</span>與<span class=\"text-amber-700 font-bold\">「自我關懷」</span>，讓健康生活成為一種輕鬆自在的內建程式，持續享受身體給予的自由與力量。";
+            } else if (!primaryTrap) {
+                // 如果平分，預設為 Self-Criticism
+                primaryTrap = 'S/C'; 
+            }
+
+            const result = resultsData[primaryTrap];
+
+            // 渲染結果頁面
+            questionContainer.classList.add('hidden');
+            navButtons.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            // 繪製雷達圖
+            renderRadarChart(scores, maxPossibleScore);
+            
+            document.getElementById('resultTitle').textContent = result.title;
+            document.getElementById('resultDescription').innerHTML = result.description;
+            document.getElementById('resultTip').innerHTML = result.tip;
+            hypnosisAdjustmentElement.innerHTML = result.hypnosisAdjustment; // 渲染新增的催眠調整建議
+        }
+
+        function resetAssessment() {
+            // 重置所有狀態
+            currentStep = 0;
+            scores = { 'A/N': 0, 'N/W': 0, 'S/C': 0, 'E/P': 0 };
+            selectedOption = null;
+
+            // 銷毀舊的圖表實例 (如果有)
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+
+            // 恢復初始介面
+            startScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            questionContainer.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            navButtons.classList.add('hidden');
+
+            // 重設 A/N 的標題，避免影響下次測驗
+            resultsData['A/N'].title = "❌ 全有或全無的極端思維 (All or Nothing)";
+            // 重設 A/N 的 description, tip, hypnosisAdjustment 為預設值 (確保下次測驗時數據是正確的)
+            resultsData['A/N'].description = "💡 選項模式 (因): 追求<span class=\"text-amber-700 font-bold\">極致完美與零失誤</span> ➡️ 🛑 潛意識陷阱 (果): 一旦失誤，立即啟動<span class=\"text-teal-600 font-semibold\">放棄懲罰模式</span>，導致持續的中斷循環。<br><br>這是一種追求極致完美主義的心魔，讓您的努力難以累積。";
+            resultsData['A/N'].tip = "請練習<span class=\"text-amber-700 font-bold\">「彈性與修復」</span>。<br>將飲食視為一個<span class=\"text-teal-600 font-semibold\">平均值</span>的遊戲，而不是完美達標的挑戰。一個小失誤只是浪花，您隨時可以溫柔地回到河流中，繼續向前流動。<br>從現在起，請將注意力放在<span class=\"text-teal-600 font-semibold\">「下一次做對」</span>，而不是<span class=\"text-teal-600 font-semibold\">「上一次做錯」</span>。";
+            resultsData['A/N'].hypnosisAdjustment = "催眠能幫助在潛意識中，將<span class=\"text-amber-700 font-bold\">「完美」</span>與<span class=\"text-amber-700 font-bold\">「挫敗」</span>的連結鬆綁。<br>透過潛意識建議，建立<span class=\"text-teal-600 font-semibold\">「彈性」</span>與<span class=\"text-teal-600 font-semibold\">「自我原諒」</span>的反射路徑，讓您在小失誤後能立即中斷放縱行為，溫和地回歸正軌。";
+        }
+
+        function showContactModal(event) {
+            event.preventDefault(); // 阻止連結跳轉
+            document.getElementById('contactModal').classList.remove('hidden');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.add('hidden');
+        }
+
+        // 初始載入：顯示起始畫面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 由於 startAssessment 包含了初始化邏輯，這裡只需確保頁面狀態正確
+            resetAssessment(); 
+        });
+
+    </script>
+</body>
+</html>
