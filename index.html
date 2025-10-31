@@ -188,9 +188,9 @@
     <script>
         // 核心資料結構：每個問題有 4 個選項，分數從 1（健康心態）到 4（陷阱嚴重）
         const questions = [
-            // Q1: 全有或全無 (A/N) - 處理失誤後的反應
+            // Q1: 全有或全無  - 處理失誤後的反應
             {
-                text: "當我的飲食計畫被打破 (例如：多吃了一塊蛋糕) 時，我通常的反應是？",
+                text: "當我的飲食計畫被打破 (例：多吃了一塊蛋糕) 時，我通常的反應是？",
                 trap: 'A/N', 
                 options: [
                     { text: "A. 沒關係，我原諒自己，下一餐/明天回到正軌。", score: 1 }, // 最健康
@@ -210,7 +210,7 @@
                     { text: "D. 每天早上體重計上的數字是唯一能證明我努力的標準。", score: 4 }
                 ]
             },
-            // Q3: 自我批判 (S/C) - 處理失控時的內在對話
+            // Q3: 自我批判  - 處理失控時的內在對話
             {
                 text: "當我對飲食或運動失控時，我對自己說的話通常是？",
                 trap: 'S/C', 
@@ -221,7 +221,7 @@
                     { text: "D. 我真是沒用，連這點自制力都沒有，我永遠做不到。", score: 4 }
                 ]
             },
-            // Q4: 外在壓力 (E/P) - 動力來源的根源
+            // Q4: 外在壓力  - 動力來源的根源
             {
                 text: "我減重最主要的動力來源是？",
                 trap: 'E/P', 
@@ -232,7 +232,7 @@
                     { text: "D. 感到巨大的壓力或義務，別人期待我改變。", score: 4 }
                 ]
             },
-            // Q5: 全有或全無 (A/N) - 處理計劃的彈性
+            // Q5: 全有或全無  - 處理計劃的彈性
             {
                 text: "當我制定飲食或運動計劃時，我對其的態度是？",
                 trap: 'A/N', 
@@ -243,7 +243,7 @@
                     { text: "D. 任何輕微的偏差都會讓我極度焦慮，認為計畫已毀。", score: 4 }
                 ]
             },
-            // Q6: 數字崇拜 (N/W) - 處理進展緩慢時的感受
+            // Q6: 數字崇拜  - 處理進展緩慢時的感受
             {
                 text: "如果我努力了一週，但體重計上的數字沒有明顯變化，我會？",
                 trap: 'N/W', 
@@ -282,27 +282,27 @@
         const resultsData = {
             'A/N': {
                 title: "❌ 全有或全無的極端思維 (All or Nothing)",
-                description: "💡 選項模式 (因): 追求<span class=\"text-amber-700 font-bold\">極致完美與零失誤</span> ➡️ 🛑 潛意識陷阱 (果): 一旦失誤，立即啟動<span class=\"text-teal-600 font-semibold\">放棄懲罰模式</span>，導致持續的中斷循環。<br><br>這是一種追求極致完美主義的心魔，讓您的努力難以累積。",
+                description: "💡 追求<span class=\"text-amber-700 font-bold\">極致完美與零失誤</span> ➡️ 🛑 潛意識陷阱: 一旦失誤，立即啟動<span class=\"text-teal-600 font-semibold\">放棄懲罰模式</span>，導致持續的中斷循環。<br><br>這是一種追求極致完美主義的心魔，讓您的努力難以累積。",
                 tip: "請練習<span class=\"text-amber-700 font-bold\">「彈性與修復」</span>。<br>將飲食視為一個<span class=\"text-teal-600 font-semibold\">平均值</span>的遊戲，而不是完美達標的挑戰。一個小失誤只是浪花，您隨時可以溫柔地回到河流中，繼續向前流動。<br>從現在起，請將注意力放在<span class=\"text-teal-600 font-semibold\">「下一次做對」</span>，而不是<span class=\"text-teal-600 font-semibold\">「上一次做錯」</span>。",
                 hypnosisAdjustment: "催眠能幫助在潛意識中，將<span class=\"text-amber-700 font-bold\">「完美」</span>與<span class=\"text-amber-700 font-bold\">「挫敗」</span>的連結鬆綁。<br>透過潛意識建議，建立<span class=\"text-teal-600 font-semibold\">「彈性」</span>與<span class=\"text-teal-600 font-semibold\">「自我原諒」</span>的反射路徑，讓您在小失誤後能立即中斷放縱行為，溫和地回歸正軌。"
             },
             'N/W': {
                 title: "🔢 數字崇拜與速效迷思 (Number Worship)",
-                description: "💡 選項模式 (因): 將<span class=\"text-amber-700 font-bold\">體重數字</span>視為衡量成功的唯一標準 ➡️ 🛑 潛意識陷阱 (果): 數字波動或停滯時產生<span class=\"text-teal-600 font-semibold\">巨大的無效感和放棄衝動</span>，忽略了行為改善的長期價值。",
+                description: "💡  將<span class=\"text-amber-700 font-bold\">體重數字</span>視為衡量成功的唯一標準 ➡️ 🛑 潛意識陷阱: 數字波動或停滯時產生<span class=\"text-teal-600 font-semibold\">巨大的無效感和放棄衝動</span>，忽略了行為改善的長期價值。",
                 tip: "請將焦點從<span class=\"text-amber-700 font-bold\">「外在數字」</span>轉移到<span class=\"text-teal-600 font-bold\">「內在感受」</span>。<br>每天記錄您的活力、睡眠和心情。設定<span class=\"text-teal-600 font-bold\">「行為目標」</span>（如：每週運動三次），而非體重數字目標，讓成功更容易被看見。<br>記得，健康是過程，數字只是結果。",
                 hypnosisAdjustment: "催眠可以重新定義<span class=\"text-teal-600 font-semibold\">「成功」</span>的標準。<br>它能強化潛意識對於<span class=\"text-amber-700 font-bold\">「內在感受」</span>（如：身體的輕盈、力量的增加）和<span class=\"text-amber-700 font-bold\">「行為持續」</span>的價值認同，減少對體重數字的焦慮與依賴，將專注力轉移到長期、穩定的健康生活方式上。"
             },
             'S/C': {
                 title: "🗣️ 嚴厲的自我批判 (Self-Criticism)",
-                description: "💡 選項模式 (因): 遇到挫折時啟動<span class=\"text-amber-700 font-bold\">嚴厲負面自責</span>，並習慣用高熱量食物應對情緒 ➡️ 🛑 潛意識陷阱 (果): 內在批評家消耗心理能量，使您慣性地尋求<span class=\"text-teal-600 font-semibold\">食物安慰</span>，陷入情緒性進食的循環。",
+                description: "💡 遇到挫折時啟動<span class=\"text-amber-700 font-bold\">嚴厲負面自責</span>，並習慣用高熱量食物應對情緒 ➡️ 🛑 潛意識陷阱 : 內在批評家消耗心理能量，使您慣性地尋求<span class=\"text-teal-600 font-semibold\">食物安慰</span>，陷入情緒性進食的循環。",
                 tip: "請培養<span class=\"text-amber-700 font-bold\">「自我關懷」</span>！<br>當您遇到挫折時，試著問自己：「如果我最好的朋友遇到這件事，我會怎麼鼓勵他？」<br>用同樣<span class=\"text-teal-600 font-bold\">溫柔的語言</span>對待自己，讓愛成為持續的動力。每一次鼓勵，都是為自己儲備能量。",
                 hypnosisAdjustment: "催眠引導能繞過批判性的意識心智，在潛意識中植入<span class=\"text-teal-600 font-bold\">「溫柔的內在聲音」</span>。<br>這有助於消除羞愧感，建立強大的<span class=\"text-amber-700 font-bold\">「自我關懷」</span>基礎，讓您在壓力或情緒低落時，自動尋求健康而非食物的安慰。"
             },
             'E/P': {
                 title: "🌍 依賴外在壓力 (External Pressure)",
-                description: "💡 選項模式 (因): 動力主要來自<span class=\"text-amber-700 font-bold\">外界期待、要求或義務感</span> ➡️ 🛑 潛意識陷阱 (果): 缺乏內在根基，將減重視為<span class=\"text-teal-600 font-semibold\">沉重負擔</span>，導致外在壓力解除後動力快速消退。",
+                description: "💡 動力主要來自<span class=\"text-amber-700 font-bold\">外界期待、要求或義務感</span> ➡️ 🛑 潛意識陷阱 : 缺乏內在根基，將體重管理視為<span class=\"text-teal-600 font-semibold\">沉重負擔</span>，導致外在壓力解除後動力快速消退。",
                 tip: "請將動機轉為<span class=\"text-teal-600 font-bold\">「內在渴望」</span>。<br>寫下減重能為您生活帶來的<span class=\"text-amber-700 font-bold\">非美觀好處</span>（如：更有體力、遠離疾病、更自信）。<br>為了自己而努力，這份動力才能堅韌且持久，成為您自己的主人。",
-                hypnosisAdjustment: "催眠可以協助您探尋真正的<span class=\"text-teal-600 font-bold\">「內在渴望」</span>。<br>透過潛意識的深度連結，將減重的動力從<span class=\"text-amber-700 font-bold\">「為別人」</span>轉變為<span class=\"text-teal-600 font-bold\">「為自己」</span>，建立堅不可摧的<span class=\"text-amber-700 font-bold\">自主性經</span>，讓改變從壓力變成享受。"
+                hypnosisAdjustment: "催眠可以協助您探尋真正的<span class=\"text-teal-600 font-bold\">「內在渴望」</span>。<br>透過潛意識的深度連結，將體重管理的動力從<span class=\"text-amber-700 font-bold\">「為別人」</span>轉變為<span class=\"text-teal-600 font-bold\">「為自己」</span>，建立堅不可摧的<span class=\"text-amber-700 font-bold\">自主性經</span>，讓改變從壓力變成享受。"
             }
         };
 
